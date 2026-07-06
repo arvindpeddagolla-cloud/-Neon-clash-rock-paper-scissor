@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rock Paper Scissors - Arcade</title>
+  <!-- Google Fonts for Modern Gaming Aesthetic -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Canvas for dynamic confetti celebration -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <div class="game-container">
+    <!-- Header Area: Controls, Title, Mode toggles -->
+    <header class="game-header glass-card">
+      <div class="header-logo">
+        <h1>NEON <span class="accent-text">CLASH</span></h1>
+        <p class="subtitle">ROCK • PAPER • SCISSORS</p>
+      </div>
+
+      <div class="header-controls">
+        <!-- Sound Toggle -->
+        <button id="sound-btn" class="control-btn" aria-label="Toggle Sound" title="Toggle Sound">
+          <svg class="icon" viewBox="0 0 24 24" width="24" height="24">
+            <path fill="currentColor" class="sound-on-path" d="M14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77zm-3 0L5.5 8H2v8h3.5l5.5 4.77V3.23zM14 9.29v5.42c1.19-.51 2-1.69 2-3.21s-.81-2.7-2-3.21z"/>
+            <path fill="currentColor" class="sound-off-path hidden" d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.21.05-.42.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>
+          </svg>
+        </button>
+
+        <!-- Theme Toggle -->
+        <button id="theme-btn" class="control-btn" aria-label="Toggle Theme" title="Toggle Theme">
+          <svg class="icon" viewBox="0 0 24 24" width="24" height="24">
+            <!-- Sun Icon -->
+            <path fill="currentColor" class="theme-sun-path hidden" d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0s-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0s-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41l-1.06-1.06zm1.06-10.96c.39-.39.39-1.03 0-1.41s-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.01c.39-.39.39-1.03 0-1.41s-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z"/>
+            <!-- Moon Icon -->
+            <path fill="currentColor" class="theme-moon-path" d="M12.3 2a10 10 0 0 0-1.9 14 10 10 0 0 0 14-1.9 1 1 0 0 0-1-1.4 8 8 0 1 1-9.7-9.7 1 1 0 0 0-1.4-1z"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Dashboards: Mode Selector, Scoreboard & Stats -->
+    <section class="dashboard-section">
+      <!-- Mode & Status Card -->
+      <div class="mode-card glass-card">
+        <span class="card-label">Game Mode</span>
+        <div class="mode-toggle-group">
+          <button id="mode-endless" class="mode-tab active" data-mode="endless">Endless</button>
+          <button id="mode-bestof5" class="mode-tab" data-mode="bestof5">Best of 5</button>
+        </div>
+        
+        <!-- Best of 5 indicator dots -->
+        <div id="match-status" class="match-status-container hidden">
+          <div class="player-dots">
+            <span class="dots-label">You:</span>
+            <div class="dots-row" id="player-dots-row">
+              <span class="dot"></span>
+              <span class="dot"></span>
+              <span class="dot"></span>
+            </div>
+          </div>
+          <div class="computer-dots">
+            <span class="dots-label">CPU:</span>
+            <div class="dots-row" id="computer-dots-row">
+              <span class="dot"></span>
+              <span class="dot"></span>
+              <span class="dot"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scoreboard Card -->
+      <div class="scoreboard-card glass-card">
+        <div class="score-item" id="card-player-score">
+          <span class="score-label">PLAYER</span>
+          <span class="score-value" id="player-score">0</span>
+        </div>
+        <div class="score-divider"></div>
+        <div class="score-item" id="card-draw-score">
+          <span class="score-label">DRAWS</span>
+          <span class="score-value" id="draw-score">0</span>
+        </div>
+        <div class="score-divider"></div>
+        <div class="score-item" id="card-computer-score">
+          <span class="score-label">COMPUTER</span>
+          <span class="score-value" id="computer-score">0</span>
+        </div>
+      </div>
+
+      <!-- Stats Card -->
+      <div class="stats-card glass-card">
+        <span class="card-label">Stats Dashboard</span>
+        <div class="stats-grid">
+          <div class="stat-box">
+            <span class="stat-number" id="stat-winrate">0%</span>
+            <span class="stat-desc">Win Rate</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-number" id="stat-rounds">0</span>
+            <span class="stat-desc">Rounds Played</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Game Area: Battle Arena -->
+    <main class="game-battleground">
+      <!-- Player Choices Area -->
+      <section class="choices-container glass-card">
+        <h2 class="section-title">YOUR CHOICE</h2>
+        <div class="choice-cards">
+          <button class="choice-card" data-choice="rock" id="btn-rock" aria-label="Select Rock">
+            <div class="card-glow"></div>
+            <div class="choice-emoji">🪨</div>
+            <span class="choice-name">ROCK</span>
+          </button>
+          <button class="choice-card" data-choice="paper" id="btn-paper" aria-label="Select Paper">
+            <div class="card-glow"></div>
+            <div class="choice-emoji">📄</div>
+            <span class="choice-name">PAPER</span>
+          </button>
+          <button class="choice-card" data-choice="scissors" id="btn-scissors" aria-label="Select Scissors">
+            <div class="card-glow"></div>
+            <div class="choice-emoji">✂️</div>
+            <span class="choice-name">SCISSORS</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Combat Arena -->
+      <section class="arena-container glass-card">
+        <div class="arena-display">
+          <!-- Player Fighter Card -->
+          <div class="arena-fighter player-fighter" id="arena-player">
+            <span class="fighter-tag">YOU</span>
+            <div class="fighter-bubble" id="arena-player-bubble">
+              <span class="fighter-emoji" id="arena-player-emoji">❓</span>
+            </div>
+            <span class="fighter-name" id="arena-player-name">READY</span>
+          </div>
+
+          <!-- VS Indicator -->
+          <div class="vs-indicator-wrapper">
+            <div class="vs-badge" id="vs-badge">VS</div>
+            <div class="clash-effects">
+              <div class="spark spark-1"></div>
+              <div class="spark spark-2"></div>
+              <div class="spark spark-3"></div>
+            </div>
+          </div>
+
+          <!-- Computer Fighter Card -->
+          <div class="arena-fighter computer-fighter" id="arena-computer">
+            <span class="fighter-tag">CPU</span>
+            <div class="fighter-bubble" id="arena-computer-bubble">
+              <span class="fighter-emoji" id="arena-computer-emoji">❓</span>
+            </div>
+            <span class="fighter-name" id="arena-computer-name">WAITING</span>
+          </div>
+        </div>
+
+        <!-- Dynamic Round Result Display -->
+        <div class="result-display-wrapper">
+          <div id="round-result-text" class="result-text">Make your move!</div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer Controls and History Logs -->
+    <footer class="game-footer">
+      <!-- Reset / Action Bar -->
+      <div class="action-card glass-card">
+        <button id="reset-btn" class="reset-button">
+          <svg class="reset-icon" viewBox="0 0 24 24" width="20" height="20">
+            <path fill="currentColor" d="M17.65 6.35A7.958 7.958 0 0 0 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+          </svg>
+          RESET ALL SCORES
+        </button>
+      </div>
+
+      <!-- History Log Card -->
+      <div class="history-card glass-card">
+        <div class="history-header">
+          <h2 class="section-title">BATTLE HISTORY</h2>
+          <span class="history-count" id="history-count">0 rounds</span>
+        </div>
+        <div class="history-list" id="history-list">
+          <div class="history-empty" id="history-empty">No rounds played yet. Battles will appear here!</div>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Best-of-5 Match Winner Overlay Modal -->
+  <div class="modal-overlay hidden" id="winner-modal">
+    <div class="modal-content glass-card">
+      <div class="modal-glow"></div>
+      <h2 id="modal-title">VICTORY!</h2>
+      <div class="modal-stats">
+        <div class="modal-stat">
+          <span class="modal-stat-label">Final Score</span>
+          <span class="modal-stat-value" id="modal-score">3 - 1</span>
+        </div>
+        <div class="modal-stat">
+          <span class="modal-stat-label">Win Rate</span>
+          <span class="modal-stat-value" id="modal-winrate">75%</span>
+        </div>
+      </div>
+      <p id="modal-message">You have defeated the computer in this Best of 5 clash!</p>
+      <button id="modal-restart-btn" class="modal-btn">PLAY AGAIN</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
